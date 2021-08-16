@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import firebase from 'firebase';
+import Lottie from 'lottie-web';
 import { toast } from 'react-toastify';
 
 import { Button, ButtonText } from '../../../Components/Button/styles';
@@ -13,7 +14,19 @@ const Login: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const [isLogging, setIsLogging] = useState<boolean>(false);
+    const [isLogging, setIsLogging] = useState<boolean>(true);
+
+    useEffect(() => {
+        Lottie.loadAnimation({
+            container: document.getElementById(
+                'loading_button',
+            ) as HTMLDivElement,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/Assets/Animations/loading.json',
+        });
+    }, []);
 
     const handleLogin = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -75,8 +88,12 @@ const Login: React.FC = () => {
                         />
                     </InputContainer>
 
-                    <Button disabled={isLogging}>
-                        <ButtonText>Entrar</ButtonText>
+                    <Button disabled={isLogging} isLoading={isLogging}>
+                        {isLogging ? (
+                            <div id="loading_button" />
+                        ) : (
+                            <ButtonText>Entrar</ButtonText>
+                        )}
                     </Button>
                 </Content>
             </form>
