@@ -9,7 +9,7 @@ export const Button = styled.button<ButtonProps>`
     cursor: pointer;
     align-items: center;
     align-self: center;
-    padding: 22px;
+    padding: 10px 15px;
     border-radius: 8px;
     margin: 15px 0;
     border: 0;
@@ -17,11 +17,11 @@ export const Button = styled.button<ButtonProps>`
     transition: all 0.3s;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 
-    max-width: 100px;
-    max-height: 75px;
+    max-height: 60px;
 
-    width: 80px;
-    height: 60px;
+    height: 80px;
+    width: 140px;
+
     &:hover {
         background-color: ${darken(0.2, '#5856d6')};
     }
@@ -36,4 +36,5 @@ export const Button = styled.button<ButtonProps>`
 export const ButtonText = styled.span`
     color: #fff;
     text-align: center;
+    text-transform: uppercase;
 `;

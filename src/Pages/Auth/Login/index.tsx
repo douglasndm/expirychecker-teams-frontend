@@ -14,7 +14,7 @@ const Login: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const [isLogging, setIsLogging] = useState<boolean>(true);
+    const [isLogging, setIsLogging] = useState<boolean>(false);
 
     useEffect(() => {
         Lottie.loadAnimation({

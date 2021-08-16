@@ -36,9 +36,8 @@ export const ListTeamsTitle = styled.span`
 export const ListTeams = styled.ul`
     margin: 0 10px;
     margin-top: 10px;
+    display: flex;
 `;
-
-export const ListItem = styled.li``;
 
 interface TeamItemContainerProps {
     isPending?: boolean;
@@ -51,6 +50,18 @@ export const TeamItemContainer = styled.button<TeamItemContainerProps>`
 
     flex-direction: row;
     justify-content: space-between;
+
+    flex: 1;
+    border: 0;
+    display: flex;
+
+    transition: all 0.2s;
+
+    &:hover {
+        cursor: pointer;
+
+        background-color: ${darken(0.2, '#ffffff')};
+    }
 
     ${props =>
         props.isPending &&

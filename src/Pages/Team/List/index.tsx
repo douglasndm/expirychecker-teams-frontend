@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
 import { toast } from 'react-toastify';
+
+import { useAuth } from '../../../Contexts/AuthContext';
+import { useTeam } from '../../../Contexts/TeamContext';
+
+import { getUserTeams } from '../../../Utils/Team/Users';
+import { setSelectedTeam } from '../../../Utils/Team/SelectedTeam';
+
 import Loading from '../../../Components/Loading';
 import Button from '../../../Components/Button';
 
@@ -11,7 +17,6 @@ import {
     EmptyText,
     ListTeamsTitle,
     ListTeams,
-    ListItem,
     TeamItemContainer,
     TeamItemTitle,
     TeamItemRole,
@@ -19,7 +24,11 @@ import {
 } from './styles';
 
 const List: React.FC = () => {
+    console.log(process.env.REACT_APP_API_URL);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const { user } = useAuth();
+    const teamContext = useTeam();
 
     const [teams, setTeams] = useState<Array<IUserRoles>>([]);
     const [selectedTeamRole, setSelectedTeamRole] = useState<IUserRoles | null>(
@@ -27,6 +36,46 @@ const List: React.FC = () => {
     );
 
     const [isManager, setIsManager] = useState<boolean>(false);
+
+    const loadData = useCallback(async () => {
+        if (!teamContext.isLoading) {
+            try {
+                setIsLoading(true);
+
+                if (!user) {
+                    return;
+                }
+
+                const response = await getUserTeams();
+
+                response.forEach(item => {
+                    if (item.role.toLowerCase() === 'Manager'.toLowerCase()) {
+                        setIsManager(true);
+                    }
+                });
+
+                const sortedTeams = response.sort((team1, team2) => {
+                    if (team1.team.active && !team2.team.active) {
+                        return 1;
+                    }
+                    if (team1.team.active && team2.team.active) {
+                        return 0;
+                    }
+                    return -1;
+                });
+
+                setTeams(sortedTeams);
+            } catch (err) {
+                toast.error(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    }, [teamContext.isLoading, user]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     const handleCreateTeam = useCallback(async () => {
         console.log('Create team');
@@ -55,22 +104,22 @@ const List: React.FC = () => {
     );
 
     interface renderProps {
-        item: IUserRoles;
+        userRole: IUserRoles;
     }
 
-    const renderCategory = useCallback(
-        ({ item }: renderProps) => {
-            const teamToNavigate = item.team.id;
+    const TeamItem = useCallback(
+        ({ userRole }: renderProps) => {
+            const teamToNavigate = userRole.team.id;
 
-            let role = item.role.toLowerCase();
+            let role = userRole.role.toLowerCase();
 
             let isPending = true;
 
-            if (item.status) {
-                if (item.status.trim().toLowerCase() === 'completed') {
+            if (userRole.status) {
+                if (userRole.status.trim().toLowerCase() === 'completed') {
                     isPending = false;
                 } else if (
-                    item.status.trim().toLowerCase() !== 'completed' &&
+                    userRole.status.trim().toLowerCase() !== 'completed' &&
                     role === 'manager'
                 ) {
                     isPending = false;
@@ -90,13 +139,13 @@ const List: React.FC = () => {
             }
 
             function handleNavigate() {
-                if (item.team.active !== true) {
-                    if (item.role.toLowerCase() !== 'manager') {
+                if (userRole.team.active !== true) {
+                    if (userRole.role.toLowerCase() !== 'manager') {
                         toast.error('O gerente precisa ativar o time.');
                         return;
                     }
                 } else if (isPending) {
-                    handleNavigateToEnterCode(item);
+                    handleNavigateToEnterCode(userRole);
                     return;
                 }
                 handleSetTeam(teamToNavigate);
@@ -104,13 +153,13 @@ const List: React.FC = () => {
 
             return (
                 <TeamItemContainer
-                    isPending={isPending || !item.team.active}
+                    isPending={isPending || !userRole.team.active}
                     onClick={handleNavigate}
                 >
-                    <TeamItemTitle>{item.team.name}</TeamItemTitle>
+                    <TeamItemTitle>{userRole.team.name}</TeamItemTitle>
                     <TeamItemRole>
                         {isPending
-                            ? item.status.toUpperCase()
+                            ? userRole.status.toUpperCase()
                             : role.toUpperCase()}
                     </TeamItemRole>
                 </TeamItemContainer>
@@ -135,7 +184,7 @@ const List: React.FC = () => {
 
                 <ListTeams>
                     {teams.map(item => (
-                        <ListItem key={item.team.id}>{item.team}</ListItem>
+                        <TeamItem key={item.team.id} userRole={item} />
                     ))}
                 </ListTeams>
             </Content>
@@ -149,11 +198,7 @@ const List: React.FC = () => {
                     />
                 )}
 
-                <Button
-                    text="Sair da conta"
-                    onPress={handleLogout}
-                    contentStyle={{ width: 150 }}
-                />
+                <Button text="Sair da conta" onPress={handleLogout} />
             </Footer>
         </Container>
     );
