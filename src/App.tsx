@@ -1,7 +1,14 @@
 import React from 'react';
 
-function App() {
-    return <div className="App" />;
-}
+import Routes from './routes';
+
+import GlobalStyles from './Styles/Global';
+
+const App: React.FC = () => (
+    <>
+        <GlobalStyles />
+        <Routes />
+    </>
+);
 
 export default App;
