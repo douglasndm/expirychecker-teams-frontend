@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
+import Firebase from 'firebase';
 import { toast } from 'react-toastify';
 
 import { useAuth } from '../../../Contexts/AuthContext';
@@ -24,7 +26,8 @@ import {
 } from './styles';
 
 const List: React.FC = () => {
-    console.log(process.env.REACT_APP_API_URL);
+    const history = useHistory();
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const { user } = useAuth();
@@ -81,9 +84,11 @@ const List: React.FC = () => {
         console.log('Create team');
     }, []);
 
-    const handleLogout = useCallback(async () => {
-        console.log('User logout');
-    }, []);
+    const handleLogout = useCallback(() => {
+        localStorage.removeItem('userToken');
+        Firebase.auth().signOut();
+        history.push('/');
+    }, [history]);
 
     const handleNavigateToEnterCode = useCallback((userRole: IUserRoles) => {
         // navigate('EnterTeam', { userRole });
