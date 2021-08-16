@@ -1,16 +1,24 @@
 import React, { useState, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import firebase from 'firebase';
 import { toast } from 'react-toastify';
 
-import { Container, Content, InputContainer, Input, Button } from './styles';
+import { Button, ButtonText } from '../../../Components/Button/styles';
+
+import { Container, Content, InputContainer, Input } from './styles';
 
 const Login: React.FC = () => {
+    const history = useHistory();
+
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+
+    const [isLogging, setIsLogging] = useState<boolean>(false);
 
     const handleLogin = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
+            setIsLogging(true);
             try {
                 const { user } = await firebase
                     .auth()
@@ -19,11 +27,17 @@ const Login: React.FC = () => {
                 const token = await user?.getIdTokenResult();
 
                 localStorage.setItem('userToken', token?.token || '');
+
+                toast('Entrando...');
+
+                history.push('/teams/list');
             } catch (err) {
                 toast.error(err.message);
+            } finally {
+                setIsLogging(false);
             }
         },
-        [email, password],
+        [email, history, password],
     );
 
     const handleOnEmailChange = useCallback(
@@ -61,7 +75,9 @@ const Login: React.FC = () => {
                         />
                     </InputContainer>
 
-                    <Button type="submit">Entrar</Button>
+                    <Button disabled={isLogging}>
+                        <ButtonText>Entrar</ButtonText>
+                    </Button>
                 </Content>
             </form>
         </Container>

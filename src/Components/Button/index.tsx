@@ -5,7 +5,7 @@ import { Button, ButtonText } from './styles';
 interface Request {
     text: string;
     isLoading?: boolean;
-    onPress: () => void;
+    onPress?: React.MouseEventHandler<HTMLButtonElement>;
     contentStyle?: React.CSSProperties;
 }
 

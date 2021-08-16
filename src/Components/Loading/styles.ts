@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
     flex: 1;
-    background: ${props => props.theme.colors.background};
+    height: 100vh;
+    display: flex;
     justify-content: center;
+    align-items: center;
 `;
 
 export const LoadingText = styled.span`
-    color: ${props => props.theme.colors.text};
-    margin-top: 15px;
     font-size: 28px;
-    text-align: center;
+    font-family: 'Open Sans', sans-serif;
 `;
