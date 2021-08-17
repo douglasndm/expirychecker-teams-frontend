@@ -10,7 +10,7 @@ import { getUserTeams } from '../../../Utils/Team/Users';
 import { setSelectedTeam } from '../../../Utils/Team/SelectedTeam';
 
 import Loading from '../../../Components/Loading';
-import Button from '../../../Components/Button';
+import { Button, ButtonText } from '../../../Components/Button/styles';
 
 import {
     Container,
@@ -34,9 +34,7 @@ const List: React.FC = () => {
     const teamContext = useTeam();
 
     const [teams, setTeams] = useState<Array<IUserRoles>>([]);
-    const [selectedTeamRole, setSelectedTeamRole] = useState<IUserRoles | null>(
-        null,
-    );
+    const [_, setSelectedTeamRole] = useState<IUserRoles | null>(null);
 
     const [isManager, setIsManager] = useState<boolean>(false);
 
@@ -90,10 +88,6 @@ const List: React.FC = () => {
         history.push('/');
     }, [history]);
 
-    const handleNavigateToEnterCode = useCallback((userRole: IUserRoles) => {
-        // navigate('EnterTeam', { userRole });
-    }, []);
-
     const handleSetTeam = useCallback(
         (teamId: string) => {
             const selectedTeam = teams.find(t => t.team.id === teamId);
@@ -102,10 +96,13 @@ const List: React.FC = () => {
                 toast.error('Team not found');
                 return;
             }
-
+            setSelectedTeam(selectedTeam);
             setSelectedTeamRole(selectedTeam);
+            if (teamContext.reload) teamContext.reload();
+
+            history.push('/team');
         },
-        [teams],
+        [history, teamContext, teams],
     );
 
     interface renderProps {
@@ -150,7 +147,10 @@ const List: React.FC = () => {
                         return;
                     }
                 } else if (isPending) {
-                    handleNavigateToEnterCode(userRole);
+                    toast.warning(
+                        'Entre no aplicativo pelo celular para concluir o processo para entrar no time',
+                    );
+
                     return;
                 }
                 handleSetTeam(teamToNavigate);
@@ -170,7 +170,7 @@ const List: React.FC = () => {
                 </TeamItemContainer>
             );
         },
-        [handleNavigateToEnterCode, handleSetTeam],
+        [handleSetTeam],
     );
 
     return isLoading ? (
@@ -197,13 +197,16 @@ const List: React.FC = () => {
             <Footer>
                 {!isManager && (
                     <Button
-                        text="Criar time"
-                        onPress={handleCreateTeam}
-                        contentStyle={{ width: 150, marginBottom: 0 }}
-                    />
+                        onClick={handleCreateTeam}
+                        style={{ width: 150, marginBottom: 0 }}
+                    >
+                        <ButtonText>Criar time</ButtonText>
+                    </Button>
                 )}
 
-                <Button text="Sair da conta" onPress={handleLogout} />
+                <Button onClick={handleLogout}>
+                    <ButtonText>Sair da conta</ButtonText>
+                </Button>
             </Footer>
         </Container>
     );

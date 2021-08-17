@@ -92,7 +92,7 @@ const Login: React.FC = () => {
             </LogoContainer>
 
             <Content>
-                <FormContainer>
+                <FormContainer onSubmit={handleLogin}>
                     <LoginTitle>Entre na sua conta</LoginTitle>
                     <InputContainer>
                         <Input

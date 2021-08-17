@@ -17,10 +17,8 @@ export const Button = styled.button<ButtonProps>`
     transition: all 0.3s;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 
-    max-height: 60px;
-
-    height: 80px;
-    width: 140px;
+    height: 70px;
+    width: 130px;
 
     &:hover {
         background-color: ${darken(0.2, '#5856d6')};
