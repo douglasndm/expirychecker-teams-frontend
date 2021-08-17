@@ -6,7 +6,20 @@ import { toast } from 'react-toastify';
 
 import { Button, ButtonText } from '../../../Components/Button/styles';
 
-import { Container, Content, InputContainer, Input } from './styles';
+import Footer from './Footer';
+
+import {
+    Container,
+    LogoContainer,
+    LogoImage,
+    LogoText,
+    LogoLink,
+    Content,
+    FormContainer,
+    LoginTitle,
+    InputContainer,
+    Input,
+} from './styles';
 
 const Login: React.FC = () => {
     const history = useHistory();
@@ -69,11 +82,21 @@ const Login: React.FC = () => {
 
     return (
         <Container>
-            <form onSubmit={handleLogin}>
-                <Content>
+            <LogoContainer>
+                <LogoLink href="https://douglasndm.dev/app/d130b6f1-85a6-446c-a842-8583ee0219bd">
+                    <LogoImage
+                        src={`${process.env.PUBLIC_URL}/Assets/Images/logo.png`}
+                    />
+                    <LogoText>Times</LogoText>
+                </LogoLink>
+            </LogoContainer>
+
+            <Content>
+                <FormContainer>
+                    <LoginTitle>Entre na sua conta</LoginTitle>
                     <InputContainer>
                         <Input
-                            placeholder="Digite seu e-mail"
+                            placeholder="E-mail"
                             type="email"
                             value={email}
                             onChange={handleOnEmailChange}
@@ -81,7 +104,7 @@ const Login: React.FC = () => {
                     </InputContainer>
                     <InputContainer>
                         <Input
-                            placeholder="Digite sua senha"
+                            placeholder="Senha"
                             type="password"
                             value={password}
                             onChange={handleOnPasswordChange}
@@ -95,8 +118,10 @@ const Login: React.FC = () => {
                             <ButtonText>Entrar</ButtonText>
                         )}
                     </Button>
-                </Content>
-            </form>
+                </FormContainer>
+
+                <Footer />
+            </Content>
         </Container>
     );
 };
