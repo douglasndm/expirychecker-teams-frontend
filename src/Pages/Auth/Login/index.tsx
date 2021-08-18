@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import firebase from 'firebase';
 import Lottie from 'lottie-web';
 import { toast } from 'react-toastify';
+import * as Yup from 'yup';
 
 import { Button, ButtonText } from '../../../Components/Button/styles';
 
@@ -46,6 +47,17 @@ const Login: React.FC = () => {
             e.preventDefault();
             setIsLogging(true);
             try {
+                const schema = Yup.object().shape({
+                    email: Yup.string()
+                        .email('O e-mail não é válido')
+                        .required('Digite seu e-mail'),
+                    password: Yup.string().required('Digite sua senha'),
+                });
+
+                await schema.validate({ email, password });
+
+                toast('Entrando...');
+
                 const { user } = await firebase
                     .auth()
                     .signInWithEmailAndPassword(email, password);
@@ -53,8 +65,6 @@ const Login: React.FC = () => {
                 const token = await user?.getIdTokenResult();
 
                 localStorage.setItem('userToken', token?.token || '');
-
-                toast('Entrando...');
 
                 history.push('/teams/list');
             } catch (err) {
@@ -68,7 +78,7 @@ const Login: React.FC = () => {
 
     const handleOnEmailChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
-            setEmail(e.target.value);
+            setEmail(e.target.value.trim());
         },
         [],
     );
