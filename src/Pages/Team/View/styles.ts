@@ -6,7 +6,7 @@ export const Container = styled.div`
     width: 100vw;
     height: 100vh;
     background-color: #f6f6f6;
-    padding: 2% 3%;
+    padding: 1%;
 `;
 
 export const PageHeader = styled.header`

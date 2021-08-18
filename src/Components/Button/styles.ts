@@ -17,8 +17,8 @@ export const Button = styled.button<ButtonProps>`
     transition: all 0.3s;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 
-    height: 70px;
-    width: 130px;
+    height: 65px;
+    width: 115px;
 
     &:hover {
         background-color: ${darken(0.2, '#5856d6')};
@@ -35,4 +35,5 @@ export const ButtonText = styled.span`
     color: #fff;
     text-align: center;
     text-transform: uppercase;
+    font-family: 'Open Sans', sans-serif;
 `;

@@ -26,7 +26,7 @@ const Subscriptions: React.FC = () => {
 
             <Button
                 onClick={handleNavigatePurchase}
-                style={{ alignSelf: 'center' }}
+                style={{ alignSelf: 'center', marginTop: 25 }}
             >
                 <ButtonText>Ver Planos</ButtonText>
             </Button>
