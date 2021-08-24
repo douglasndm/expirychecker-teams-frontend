@@ -204,7 +204,10 @@ const List: React.FC = () => {
                     </Button>
                 )}
 
-                <Button onClick={handleLogout}>
+                <Button
+                    onClick={handleLogout}
+                    style={{ width: 150, marginBottom: 15 }}
+                >
                     <ButtonText>Sair da conta</ButtonText>
                 </Button>
             </Footer>

@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 
 import { Button, ButtonText } from '../../../Components/Button/styles';
 
-import Footer from './Footer';
+import CreateAccount from './CreateAccount';
 
 import {
     Container,
@@ -20,6 +20,10 @@ import {
     LoginTitle,
     InputContainer,
     Input,
+    AboutContainer,
+    CreateAccountText,
+    Text,
+    Link,
 } from './styles';
 
 const Login: React.FC = () => {
@@ -29,6 +33,7 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState<string>('');
 
     const [isLogging, setIsLogging] = useState<boolean>(false);
+    const [isCreateAccount, setIsCreateAccount] = useState(false);
 
     useEffect(() => {
         Lottie.loadAnimation({
@@ -90,6 +95,10 @@ const Login: React.FC = () => {
         [],
     );
 
+    const handleSwitchCreateAccount = useCallback(() => {
+        setIsCreateAccount(!isCreateAccount);
+    }, [isCreateAccount]);
+
     return (
         <Container>
             <LogoContainer>
@@ -102,35 +111,65 @@ const Login: React.FC = () => {
             </LogoContainer>
 
             <Content>
-                <FormContainer onSubmit={handleLogin}>
-                    <LoginTitle>Entre na sua conta</LoginTitle>
-                    <InputContainer>
-                        <Input
-                            placeholder="E-mail"
-                            type="email"
-                            value={email}
-                            onChange={handleOnEmailChange}
-                        />
-                    </InputContainer>
-                    <InputContainer>
-                        <Input
-                            placeholder="Senha"
-                            type="password"
-                            value={password}
-                            onChange={handleOnPasswordChange}
-                        />
-                    </InputContainer>
+                {isCreateAccount ? (
+                    <CreateAccount />
+                ) : (
+                    <>
+                        <FormContainer onSubmit={handleLogin}>
+                            <LoginTitle>Entre na sua conta</LoginTitle>
+                            <InputContainer>
+                                <Input
+                                    placeholder="E-mail"
+                                    type="email"
+                                    value={email}
+                                    onChange={handleOnEmailChange}
+                                />
+                            </InputContainer>
+                            <InputContainer>
+                                <Input
+                                    placeholder="Senha"
+                                    type="password"
+                                    value={password}
+                                    onChange={handleOnPasswordChange}
+                                />
+                            </InputContainer>
 
-                    <Button disabled={isLogging} isLoading={isLogging}>
-                        {isLogging ? (
-                            <div id="loading_button" />
-                        ) : (
-                            <ButtonText>Entrar</ButtonText>
-                        )}
-                    </Button>
-                </FormContainer>
+                            <Button disabled={isLogging} isLoading={isLogging}>
+                                {isLogging ? (
+                                    <div id="loading_button" />
+                                ) : (
+                                    <ButtonText>Entrar</ButtonText>
+                                )}
+                            </Button>
+                        </FormContainer>
+                    </>
+                )}
 
-                <Footer />
+                <AboutContainer>
+                    <CreateAccountText onClick={handleSwitchCreateAccount}>
+                        {isCreateAccount
+                            ? 'Já tem conta? Entre na sua conta'
+                            : 'Novo aqui? Crie sua conta no aplicativo'}
+                    </CreateAccountText>
+
+                    <Text>
+                        {`Ao usar este aplicativo você está aceitando nossos `}
+                        <Link
+                            href="https://douglasndm.dev/terms"
+                            target="_blank"
+                        >
+                            Termos de uso
+                        </Link>
+                        {` e `}
+                        <Link
+                            href="https://douglasndm.dev/privacy"
+                            target="_blank"
+                        >
+                            Política de Privacidade
+                        </Link>
+                        .
+                    </Text>
+                </AboutContainer>
             </Content>
         </Container>
     );
