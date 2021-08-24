@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import Firebase from 'firebase';
 import { toast } from 'react-toastify';
 
+import { Logout } from 'Utils/Account/Login';
 import { useAuth } from '../../../Contexts/AuthContext';
 import { useTeam } from '../../../Contexts/TeamContext';
 
@@ -82,9 +82,8 @@ const List: React.FC = () => {
         console.log('Create team');
     }, []);
 
-    const handleLogout = useCallback(() => {
-        localStorage.removeItem('userToken');
-        Firebase.auth().signOut();
+    const handleLogout = useCallback(async () => {
+        await Logout();
         history.push('/');
     }, [history]);
 
