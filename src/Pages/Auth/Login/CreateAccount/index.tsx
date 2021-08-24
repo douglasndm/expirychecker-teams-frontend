@@ -1,10 +1,17 @@
 import React, { useState, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+
+import { createAccount } from 'Utils/Account/Create';
 
 import { Button, ButtonText } from '../../../../Components/Button/styles';
 
 import { FormContainer, LoginTitle, InputContainer, Input } from '../styles';
 
 const CreateAccount: React.FC = () => {
+    const history = useHistory();
+
     const [isCreating, setIsCreating] = useState<boolean>(false);
 
     const [name, setName] = useState<string>('');
@@ -38,13 +45,62 @@ const CreateAccount: React.FC = () => {
         [],
     );
 
-    const handleCreateAccount = useCallback(async () => {
-        try {
-            setIsCreating(true);
-        } finally {
-            setIsCreating(false);
-        }
-    }, []);
+    const handleCreateAccount = useCallback(
+        async (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+
+            const schema = Yup.object().shape({
+                name: Yup.string().required('Digite o seu nome'),
+                lastName: Yup.string().required('Digite seu sobrenome'),
+                email: Yup.string()
+                    .required('E-mail é obrigátio')
+                    .email('E-mail inválido'),
+                password: Yup.string().required('Digite a senha').min(6),
+                passwordConfirm: Yup.string().oneOf(
+                    [Yup.ref('password'), null],
+                    'Confirmação da senha não corresponde a senha',
+                ),
+            });
+
+            try {
+                await schema.validate({
+                    name,
+                    lastName,
+                    email,
+                    password,
+                    passwordConfirm,
+                });
+            } catch (err) {
+                toast.error(err.errors[0]);
+                return;
+            }
+
+            try {
+                setIsCreating(true);
+
+                const user = await createAccount({
+                    name,
+                    lastName,
+                    email,
+                    password,
+                    passwordConfirm,
+                });
+
+                toast.info('Conta criada!');
+
+                const token = await user?.getIdTokenResult();
+
+                localStorage.setItem('userToken', token?.token || '');
+
+                history.push('/teams/list');
+            } catch (err) {
+                toast.error(err.message);
+            } finally {
+                setIsCreating(false);
+            }
+        },
+        [email, history, lastName, name, password, passwordConfirm],
+    );
     return (
         <>
             <FormContainer onSubmit={handleCreateAccount}>
